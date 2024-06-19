@@ -54,3 +54,8 @@ Note: Everything after bbgl->start() will only be called after the window is clo
 2. OS
 
     BBGL is completely dependent on the Windows API for now althought this will be changed in later updates.
+
+# contribution
+
+You are welcome to post issues or pull requests in this repository.\
+It would be greatly appreciated to get a Mac and Linux implementation.
