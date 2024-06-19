@@ -39,6 +39,10 @@ BareBones Graphics Library is just a small library im making which gives you the
             return 0;
         }
 
+4. change pixel data of the window
+
+        bbgl->buffs->set_pixel(x, y, RGB(255,255,255));
+
 here the bbgl object declared in step 1 is instanciated with a given width and height that will control the size of the window.\
 The update and draw functions are set in the bbgl object.\
 the start method is then called which will start the window internal loop.
