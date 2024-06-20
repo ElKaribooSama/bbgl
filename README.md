@@ -9,39 +9,44 @@ BareBones Graphics Library is just a small library im making which gives you the
 # usage
 
 1. declare the basic parameters
-
-        int HEIGHT = 400;
-        int WIDTH = 400;
-        BBGL *bbgl;
-        void draw();
-        void update();
+    ```cpp
+    int HEIGHT = 400;
+    int WIDTH = 400;
+    BBGL *bbgl;
+    void draw();
+    void update();
+    ```
 
 2. fill the update and draw functions
+    ```cpp
+    void draw() {
+        /** This i where you draw stuff **/
+        return;
+    }
 
-        void draw() {
-            /** This i where you draw stuff **/
-            return;
-        }
-
-        void update() {
-            /** This i where you do logic stuff **/
-            return;
-        }
+    void update() {
+        /** This i where you do logic stuff **/
+        return;
+    }
+    ```
 
 3. create the bbgl object
-
-        int main() {
-            bbgl = new BBGL(WIDTH,HEIGHT);
-            bbgl->update = update;
-            bbgl->draw = draw;
-            bbgl->start();
-            std::cout << "GoodBye World!" << std::endl;
-            return 0;
-        }
+    ```cpp
+    int main() {
+        bbgl = new BBGL(WIDTH,HEIGHT);
+        bbgl->update = update;
+        bbgl->draw = draw;
+        bbgl->start();
+        std::cout << "GoodBye World!" << std::endl;
+        return 0;
+    }
+    ```
 
 4. change pixel data of the window
 
-        bbgl->buffs->set_pixel(x, y, RGB(255,255,255));
+    ```cpp
+    bbgl->buffs->set_pixel(x, y, RGB(255,255,255));
+    ```
 
 here the bbgl object declared in step 1 is instanciated with a given width and height that will control the size of the window.\
 The update and draw functions are set in the bbgl object.\
