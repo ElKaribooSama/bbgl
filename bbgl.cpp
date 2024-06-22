@@ -3,6 +3,14 @@
 constexpr int kTimerID = 101;
 
 
+BBGL::BBGL() {
+    BBGLOPTIONS baseoptions;
+    this->options = baseoptions;
+    this->buffs = new graphic_buffers(baseoptions.windowOptions.minWidth,
+                                      baseoptions.windowOptions.minHeight,
+                                      baseoptions.bufferOptions.baseColor);
+}
+
 BBGL::BBGL(BBGLOPTIONS bbglOptions) {
     this->options = bbglOptions;
     this->buffs = new graphic_buffers(bbglOptions.windowOptions.minWidth,
