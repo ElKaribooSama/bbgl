@@ -3,25 +3,11 @@
 constexpr int kTimerID = 101;
 
 
-BBGL::BBGL(int width, int height) {
-    this->width = width;
-    this->height = height;
-    this->buffs = new graphic_buffers(width,height);
-
-    for (int x=0;x<width;x++) {
-        for (int y=0;y<height;y++) {
-            this->buffs->set_pixel(x,y,RGB(0,0,0));
-        }
-    }
-
-    this->buffs->swap();
-
-    for (int x=0;x<width;x++) {
-        for (int y=0;y<height;y++) {
-            this->buffs->set_pixel(x,y,RGB(0,0,0));
-        }
-    }
-
+BBGL::BBGL(BBGLOPTIONS bbglOptions) {
+    this->options = bbglOptions;
+    this->buffs = new graphic_buffers(bbglOptions.windowOptions.minWidth,
+                                      bbglOptions.windowOptions.minHeight,
+                                      bbglOptions.bufferOptions.baseColor);
 }
 
 BBGL::~BBGL() {
@@ -43,9 +29,9 @@ int WINAPI BBGL::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpC
         return 1;
 
     if (!CreateWindow(wc.lpszClassName,
-        "buffered window",
+        this->options.windowName,
         WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-        0, 0, this->width, this->height, 0, 0, hInstance, this))
+        0, 0, this->options.windowOptions.minWidth, this->options.windowOptions.minHeight, 0, 0, hInstance, this))
         return 2;
 
     while (GetMessage(&msg, NULL, 0, 0) > 0) {
@@ -74,15 +60,32 @@ LRESULT CALLBACK BBGL::_wndproc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
                 this->update();
                 this->draw();
                 this->buffs->swap();
-                this->buffs->clear();
+                if (this->options.bufferOptions.clearBufferOnDraw) {
+                    this->buffs->clear();
+                }
                 InvalidateRect(hWnd, NULL, FALSE);
             }
             break;
         case WM_GETMINMAXINFO: {
                 MINMAXINFO *minmax = (MINMAXINFO *)lParam;
-                minmax->ptMaxTrackSize.x = minmax->ptMinTrackSize.x = this->width;
-                minmax->ptMaxTrackSize.y = minmax->ptMinTrackSize.y = this->height;
+                if (!this->options.windowOptions.allowResize) {
+                    minmax->ptMaxTrackSize.x = minmax->ptMinTrackSize.x = this->options.windowOptions.minWidth;
+                    minmax->ptMaxTrackSize.y = minmax->ptMinTrackSize.y = this->options.windowOptions.minHeight;
+                } else {
+                    minmax->ptMinTrackSize.x = this->options.windowOptions.minWidth;
+                    minmax->ptMinTrackSize.y = this->options.windowOptions.minHeight;
+
+                    minmax->ptMaxTrackSize.x = this->options.windowOptions.maxWidth;
+                    minmax->ptMaxTrackSize.y = this->options.windowOptions.maxHeight;
+                }
                 break;
+            }
+        case WM_SIZE: {
+                UINT width = LOWORD(lParam);
+                UINT height = HIWORD(lParam);
+                this->buffs = new graphic_buffers(width,
+                                                  height,
+                                                  this->options.bufferOptions.baseColor);
             }
         case WM_PAINT: {
                 hdc = BeginPaint(hWnd, &ps);

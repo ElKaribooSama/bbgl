@@ -8,10 +8,8 @@ BareBones Graphics Library is just a small library im making which gives you the
 
 # usage
 
-1. declare the basic parameters
+1. declare the needed variables
     ```cpp
-    int HEIGHT = 400;
-    int WIDTH = 400;
     BBGL *bbgl;
     void draw();
     void update();
@@ -30,10 +28,18 @@ BareBones Graphics Library is just a small library im making which gives you the
     }
     ```
 
-3. create the bbgl object
+3. create the BBGLOPTIONS object
+    ```cpp
+    BBGLOPTIONS bbglOptions;
+    bbglOptions.windowOptions.maxHeight = 1024;
+    bbglOptions.windowOptions.maxWidth = 1024;
+    bbglOptions.windowOptions.allowResize = true;
+    ```
+
+4. create the bbgl object
     ```cpp
     int main() {
-        bbgl = new BBGL(WIDTH,HEIGHT);
+        bbgl = new BBGL(bbglOptions);
         bbgl->update = update;
         bbgl->draw = draw;
         bbgl->start();
@@ -42,15 +48,15 @@ BareBones Graphics Library is just a small library im making which gives you the
     }
     ```
 
-4. change pixel data of the window
+5. change pixel data of the window
 
     ```cpp
     bbgl->buffs->set_pixel(x, y, RGB(255,255,255));
     ```
-
-here the bbgl object declared in step 1 is instanciated with a given width and height that will control the size of the window.\
-The update and draw functions are set in the bbgl object.\
-the start method is then called which will start the window internal loop.
+    you can also use safe_set_pixel to prevent crashes but it is a bit slower
+    ```cpp
+    bbgl->buffs->safe_set_pixel(x, y, RGB(255,255,255));
+    ```
 
 Note: Everything after bbgl->start() will only be called after the window is closed.
 

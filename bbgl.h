@@ -4,20 +4,37 @@
 #include <algorithm>
 #include "graphic_buffers.h"
 
+struct BBGLWINDOWOPTION {
+    bool allowResize = false;
+    bool allowMaximised = false;
+    int minWidth = 512;
+    int minHeight = 512;
+    int maxWidth = 512;
+    int maxHeight = 512;
+};
+
+struct BBGLBUFFEROPTION {
+    bool clearBufferOnDraw = true;
+    COLORREF baseColor = RGB(0,0,0);
+};
+
+struct BBGLOPTIONS {
+    char* windowName = "BBGL window";
+    BBGLWINDOWOPTION windowOptions;
+    BBGLBUFFEROPTION bufferOptions;
+};
 
 
-class BBGL
-{
+class BBGL {
 private:
     int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
     static LRESULT CALLBACK wndproc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     LRESULT CALLBACK _wndproc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     /* data */
 public:
-    BBGL(int width, int height);
+    BBGL(BBGLOPTIONS bbglOptions);
     ~BBGL();
-    int width;
-    int height;
+    BBGLOPTIONS options;
     void (*draw)();
     void (*update)();
     void start();

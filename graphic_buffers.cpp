@@ -1,10 +1,13 @@
 #include "graphic_buffers.h"
 
-graphic_buffers::graphic_buffers(int wd, int hgt) : 
+graphic_buffers::graphic_buffers(int wd, int hgt, COLORREF color) : 
                  wd_(wd),
                  hgt_(hgt),
                  front_(create_graphics_buffer(wd, hgt)),
-                 back_(create_graphics_buffer(wd, hgt)) {
+                 back_(create_graphics_buffer(wd, hgt)),
+                 bc_(color) {
+    clear();
+    swap();
     clear();
 }
 
@@ -47,7 +50,12 @@ int graphic_buffers::height() const {
 }
 
 void graphic_buffers::clear() {
-    std::fill(back_.data, back_.data + size(), 0);
+    std::fill(back_.data, back_.data + size(), bc_);
+}
+
+void graphic_buffers::safe_set_pixel(int x, int y, uint32_t pix) {
+    if (x > wd_ || x < 0 || y > hgt_ || y < 0) return;
+    back_.data[y * wd_ + x] = pix;
 }
 
 void graphic_buffers::set_pixel(int x, int y, uint32_t pix) {
