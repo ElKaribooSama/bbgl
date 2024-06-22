@@ -68,16 +68,22 @@ LRESULT CALLBACK BBGL::_wndproc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
             break;
         case WM_GETMINMAXINFO: {
                 MINMAXINFO *minmax = (MINMAXINFO *)lParam;
-                if (!this->options.windowOptions.allowResize) {
-                    minmax->ptMaxTrackSize.x = minmax->ptMinTrackSize.x = this->options.windowOptions.minWidth;
-                    minmax->ptMaxTrackSize.y = minmax->ptMinTrackSize.y = this->options.windowOptions.minHeight;
-                } else {
-                    minmax->ptMinTrackSize.x = this->options.windowOptions.minWidth;
-                    minmax->ptMinTrackSize.y = this->options.windowOptions.minHeight;
+                minmax->ptMinTrackSize.x = this->options.windowOptions.minWidth;
+                minmax->ptMinTrackSize.y = this->options.windowOptions.minHeight;
 
+                if (!this->options.windowOptions.allowResize) {
+                    minmax->ptMaxTrackSize.x = minmax->ptMinTrackSize.x;
+                    minmax->ptMaxTrackSize.y = minmax->ptMinTrackSize.y;
+                    break;
+                }
+                
+                if (!this->options.windowOptions.allowMaximised) {
                     minmax->ptMaxTrackSize.x = this->options.windowOptions.maxWidth;
                     minmax->ptMaxTrackSize.y = this->options.windowOptions.maxHeight;
+                    break;
                 }
+
+
                 break;
             }
         case WM_SIZE: {

@@ -62,9 +62,9 @@ Note: Everything after bbgl->start() will only be called after the window is clo
 
 # limitation
 
-1. maximising
+1. scaling
 
-    For now BBGL does not support maximising the window.
+    For now BBGL does not scale the buffer when resizing the window.
 
 2. OS
 
