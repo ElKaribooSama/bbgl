@@ -62,13 +62,13 @@ Note: Everything after bbgl->start() will only be called after the window is clo
 
 # limitation
 
-1. resizing
+1. maximising
 
-    For now BBGL does not support resizing the window although this will come later.
+    For now BBGL does not support maximising the window.
 
 2. OS
 
-    BBGL is completely dependent on the Windows API for now althought this will be changed in later updates.
+    BBGL is completely dependent on the Windows API.
 
 # contribution
 
