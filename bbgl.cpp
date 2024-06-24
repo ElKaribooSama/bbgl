@@ -68,6 +68,9 @@ LRESULT CALLBACK BBGL::_wndproc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
                 this->update();
                 this->draw();
                 this->buffs->swap();
+
+                //if you know that you will never need to clear the buffer you can comment the if
+                //if you always want to clear you can remove the if itself and keep the clear
                 if (this->options.bufferOptions.clearBufferOnDraw) {
                     this->buffs->clear();
                 }
