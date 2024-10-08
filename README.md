@@ -17,8 +17,13 @@ BareBones Graphics Library is just a small library im making which gives you the
 
 2. fill the update and draw functions
     ```cpp
+    void draw() {
+        /** This i where you draw stuff **/
+        return;
+    }
+
     void update() {
-        /** This is the main loop of the program **/
+        /** This i where you do logic stuff **/
         return;
     }
     ```
@@ -36,6 +41,7 @@ BareBones Graphics Library is just a small library im making which gives you the
     int main() {
         bbgl = new BBGL(bbglOptions);
         bbgl->update = update;
+        bbgl->draw = draw;
         bbgl->start();
         std::cout << "GoodBye World!" << std::endl;
         return 0;
@@ -51,13 +57,6 @@ BareBones Graphics Library is just a small library im making which gives you the
     ```cpp
     bbgl->buffs->safe_set_pixel(x, y, RGB(255,255,255));
     ```
-
-When started BBGL will create a window with the content of the buffer displayed defaulting to the color passed in the options.\
-it will then loop as such:
-- call the update function
-- draw to the buffer
-
-Inputs are automatically handled and sent to the inputs variable of BBGL
 
 Note: Everything after bbgl->start() will only be called after the window is closed.
 

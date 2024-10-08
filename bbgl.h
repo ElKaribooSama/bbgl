@@ -1,12 +1,7 @@
-#pragma once
-#ifndef _BBGL_H_
-#define _BBGL_H_
-
 #include <windows.h>
 #include <stdint.h>
 #include <utility>
 #include <algorithm>
-#include <map>
 #include "graphic_buffers.h"
 
 /**
@@ -75,51 +70,6 @@ struct BBGLOPTIONS {
 };
 
 /**
- * A struct containing the diffrent input information of the mouse
-*/
-struct BBGLMOUSEINPUTS {
-    /**
-     * true if the left click is held down
-    */
-    bool leftClick = false;
-
-    /**
-     * true if the right click is held down
-    */
-    bool rightClick = false;
-
-    /**
-     * true if the middle click is held down
-    */
-    bool middleClick = false;
-
-    /**
-     * the current X position of the mouse
-    */
-    int positionX = 0;
-
-    /**
-     * the current X position of the mouse
-    */
-    int positionY = 0;
-};
-
-/**
- * A struct containing the different inputs received by the window
-*/
-struct BBGLINPUTS {
-    /**
-     * A struct containing the diffrent input information of the mouse
-    */
-    BBGLMOUSEINPUTS mouse;
-
-    /**
-     * A vector containing the keys that are currently held
-    */
-    std::map<int,bool> keyDown;
-};
-
-/**
  * The main class of BBGL instanciate it, fill the draw and update functions
  * then call the start function to create the window
 */
@@ -137,7 +87,6 @@ public:
      * With no arguments given bbgl will create a black 512x512 non resizeable window
     */
     BBGL();
-
     /**
      * Fills the options variable with the given BBGLOPTIONS object before making the window
     */
@@ -150,7 +99,13 @@ public:
     BBGLOPTIONS options;
 
     /**
-     * The function called before drawing to on the window
+     * The function called for writing to the buffer
+     * use this function to draw to interact with the window buffer
+    */
+    void (*draw)();
+
+    /**
+     * The function called before writing to the buffer
      * use this function to update the rest of your program ex: advance 1 tick through a simulation
     */
     void (*update)();
@@ -161,14 +116,11 @@ public:
     void start();
 
     /**
-     * The buffer that will be used to draw on the screen
+     * The back and front buffers that will be used to draw on the screen
+     * every frame the front and back buffers are swapped. pointers to one of the buffers
+     * will however not be swapped everyframe
     */
-    graphic_buffers *buffs;
-
-    /**
-     * The variable containing the user inputs
-    */
-    BBGLINPUTS inputs;
+    graphic_buffers *buffs;    
 };
 
-#endif
+

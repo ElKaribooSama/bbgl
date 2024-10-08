@@ -2,8 +2,6 @@
 
 constexpr int kTimerID = 101;
 
-#define mouseX(param) (param & 0b00000000000000001111111111111111)
-#define mouseY(param) ((param & 0b11111111111111110000000000000000) >> 16)
 
 BBGL::BBGL() {
     BBGLOPTIONS baseoptions;
@@ -66,48 +64,16 @@ LRESULT CALLBACK BBGL::wndproc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
 LRESULT CALLBACK BBGL::_wndproc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
-        case WM_KEYDOWN: {
-            this->inputs.keyDown[wParam] = true;
-            break;
-        }
-        case WM_KEYUP: {
-            this->inputs.keyDown[wParam] = false;
-            break;
-        }
-        case WM_LBUTTONDOWN: {
-            this->inputs.mouse.leftClick = true;
-            break;
-        }
-        case WM_LBUTTONUP: {
-            this->inputs.mouse.leftClick = false;
-            break;
-        }
-        case WM_RBUTTONDOWN: {
-            this->inputs.mouse.rightClick = true;
-            break;
-        }
-        case WM_RBUTTONUP: {
-            this->inputs.mouse.rightClick = false;
-            break;
-        }
-        case WM_MBUTTONDOWN: {
-            this->inputs.mouse.middleClick = true;
-            break;
-        }
-        case WM_MBUTTONUP: {
-            this->inputs.mouse.middleClick = false;
-            break;
-        }
-        case WM_MOUSEMOVE: {
-            this->inputs.mouse.positionX = mouseX(lParam);
-            this->inputs.mouse.positionY = mouseY(lParam);
-            break;
-        }
         case WM_TIMER: {
+                this->update();
+                this->draw();
+                this->buffs->swap();
+
+                //if you know that you will never need to clear the buffer you can comment the if
+                //if you always want to clear you can remove the if itself and keep the clear
                 if (this->options.bufferOptions.clearBufferOnDraw) {
                     this->buffs->clear();
                 }
-                this->update();
                 InvalidateRect(hWnd, NULL, FALSE);
             }
             break;
@@ -141,7 +107,7 @@ LRESULT CALLBACK BBGL::_wndproc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         case WM_PAINT: {
                 hdc = BeginPaint(hWnd, &ps);
                 hdc_bmp = CreateCompatibleDC(hdc);
-                old_bmp = SelectObject(hdc_bmp, buffs->bmp());
+                old_bmp = SelectObject(hdc_bmp, buffs->front_bmp());
 
                 BitBlt(hdc, 0, 0, this->buffs->width(), this->buffs->height(), hdc_bmp, 0, 0, SRCCOPY);
 

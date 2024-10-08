@@ -3,8 +3,15 @@
 graphic_buffers::graphic_buffers(int wd, int hgt, COLORREF color) : 
                  wd_(wd),
                  hgt_(hgt),
+                 front_(create_graphics_buffer(wd, hgt)),
+                 back_(create_graphics_buffer(wd, hgt)),
                  bc_(color) {
+    clear();
+    swap();
+    clear();
+}
 
+graphics_buffer graphic_buffers::create_graphics_buffer(int wd, int hgt) {
     HDC hdcScreen = GetDC(NULL);
 
     BITMAPINFO bmi = {};
@@ -15,41 +22,47 @@ graphic_buffers::graphic_buffers(int wd, int hgt, COLORREF color) :
     bmi.bmiHeader.biBitCount = 32;
     bmi.bmiHeader.biCompression = BI_RGB;
 
-    buffer.hbm = CreateDIBSection(hdcScreen, &bmi, DIB_RGB_COLORS, reinterpret_cast<void**>(&buffer.data), NULL, 0);
+    graphics_buffer gb;
+    gb.hbm = CreateDIBSection(hdcScreen, &bmi, DIB_RGB_COLORS, reinterpret_cast<void**>(&gb.data), NULL, 0);
+
     ReleaseDC(NULL, hdcScreen);
-
-    clear();
+    return gb;
 }
 
-HBITMAP graphic_buffers::bmp() {
-    return buffer.hbm;
+HBITMAP graphic_buffers::front_bmp() {
+    return front_.hbm;
 }
 
-size_t graphic_buffers::size() {
+void graphic_buffers::swap() {
+    std::swap(front_, back_);
+}
+
+size_t graphic_buffers::size() const {
     return static_cast<size_t>(wd_ * hgt_);
 }
 
-int graphic_buffers::width() {
+int graphic_buffers::width() const {
     return wd_;
 }
 
-int graphic_buffers::height() {
+int graphic_buffers::height() const {
     return hgt_;
 }
 
 void graphic_buffers::clear() {
-    std::fill(buffer.data, buffer.data + size(), bc_);
+    std::fill(back_.data, back_.data + size(), bc_);
 }
 
 void graphic_buffers::safe_set_pixel(int x, int y, uint32_t pix) {
     if (x > wd_ || x < 0 || y > hgt_ || y < 0) return;
-    buffer.data[y * wd_ + x] = pix;
+    back_.data[y * wd_ + x] = pix;
 }
 
 void graphic_buffers::set_pixel(int x, int y, uint32_t pix) {
-    buffer.data[y * wd_ + x] = pix;
+    back_.data[y * wd_ + x] = pix;
 }
 
 graphic_buffers::~graphic_buffers() {
-    DeleteObject(buffer.hbm);
+    DeleteObject(front_.hbm);
+    DeleteObject(back_.hbm);
 }
