@@ -1,3 +1,7 @@
+#pragma once
+#ifndef _GRAPHICBUFFER_H_
+#define _GRAPHICBUFFER_H_
+
 #include <windows.h>
 #include <stdint.h>
 #include <utility>
@@ -29,3 +33,5 @@ public:
     void set_pixel(int x, int y, uint32_t pix);
     ~graphic_buffers();
 };
+
+#endif
