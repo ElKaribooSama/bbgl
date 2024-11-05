@@ -1,5 +1,8 @@
 #include "bbgl.h"
 
+#define mouseX(param) (param & 0b00000000000000001111111111111111)
+#define mouseY(param) ((param & 0b11111111111111110000000000000000) >> 16)
+
 constexpr int kTimerID = 101;
 
 
@@ -56,6 +59,7 @@ LRESULT CALLBACK BBGL::wndproc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
         SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(createstruct->lpCreateParams));
         SetTimer(hWnd, kTimerID, 1, NULL);
     }
+    
 
     BBGL* me = reinterpret_cast<BBGL*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
     if (me) return me->_wndproc(hWnd, message, wParam, lParam);
@@ -66,15 +70,14 @@ LRESULT CALLBACK BBGL::_wndproc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     switch (message) {
         case WM_TIMER: {
                 this->update();
-                this->draw();
                 this->buffs->swap();
-
                 //if you know that you will never need to clear the buffer you can comment the if
                 //if you always want to clear you can remove the if itself and keep the clear
                 if (this->options.bufferOptions.clearBufferOnDraw) {
                     this->buffs->clear();
                 }
                 InvalidateRect(hWnd, NULL, FALSE);
+
             }
             break;
         case WM_GETMINMAXINFO: {
@@ -116,16 +119,50 @@ LRESULT CALLBACK BBGL::_wndproc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
                 EndPaint(hWnd, &ps);
             }
             break;
-
         case WM_DESTROY: {
                 delete this->buffs;
             }
             break;
-
         case WM_CLOSE:
             PostQuitMessage(0);
             break;
-
+        case WM_KEYDOWN: {
+            this->inputs.keyDown[wParam] = true;
+            break;
+        }
+        case WM_KEYUP: {
+            this->inputs.keyDown[wParam] = false;
+            break;
+        }
+        case WM_LBUTTONDOWN: {
+            this->inputs.mouse.leftClick = true;
+            break;
+        }
+        case WM_LBUTTONUP: {
+            this->inputs.mouse.leftClick = false;
+            break;
+        }
+        case WM_RBUTTONDOWN: {
+            this->inputs.mouse.rightClick = true;
+            break;
+        }
+        case WM_RBUTTONUP: {
+            this->inputs.mouse.rightClick = false;
+            break;
+        }
+        case WM_MBUTTONDOWN: {
+            this->inputs.mouse.middleClick = true;
+            break;
+        }
+        case WM_MBUTTONUP: {
+            this->inputs.mouse.middleClick = false;
+            break;
+        }
+        case WM_MOUSEMOVE: {
+            this->inputs.mouse.positionX = mouseX(lParam);
+            this->inputs.mouse.positionY = mouseY(lParam);
+            break;
+        }
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
