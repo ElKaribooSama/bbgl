@@ -11,17 +11,11 @@ BareBones Graphics Library is just a small library im making which gives you the
 1. declare the needed variables
     ```cpp
     BBGL *bbgl;
-    void draw();
     void update();
     ```
 
 2. fill the update and draw functions
     ```cpp
-    void draw() {
-        /** This i where you draw stuff **/
-        return;
-    }
-
     void update() {
         /** This i where you do logic stuff **/
         return;
@@ -41,7 +35,6 @@ BareBones Graphics Library is just a small library im making which gives you the
     int main() {
         bbgl = new BBGL(bbglOptions);
         bbgl->update = update;
-        bbgl->draw = draw;
         bbgl->start();
         std::cout << "GoodBye World!" << std::endl;
         return 0;
@@ -55,10 +48,11 @@ BareBones Graphics Library is just a small library im making which gives you the
     ```
     you can also use safe_set_pixel to prevent crashes but it is a bit slower
     ```cpp
-    bbgl->buffs->safe_set_pixel(x, y, RGB(255,255,255));
+    bbgl->buffs->safe_set_pixel(x, y, RGB(255,255,255)); //RGB is a macro to turn 4 byte to a uint32_t
     ```
 
-Note: Everything after bbgl->start() will only be called after the window is closed.
+Note: Everything after bbgl->start() will only be called after the window is closed. If you need to setup things before the first\
+update you can do it before calling bbgl->start()
 
 # limitation
 
